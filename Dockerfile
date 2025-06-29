@@ -1,11 +1,17 @@
-FROM python:3.11
+# Use Python base image
+FROM python:3.10
 
+# Set working directory
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
+# Copy project files
 COPY . .
 
-EXPOSE 10000
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose port
+EXPOSE 8000
+
+# Run startup script
 CMD ["bash", "start.sh"]

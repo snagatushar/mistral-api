@@ -1,29 +1,21 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
+from pydantic import BaseModel
 from mistralai.client import MistralClient
 from mistralai.models.chat_completion import ChatMessage
 import os
 
 app = FastAPI()
 
-# Initialize Mistral client with your API key from env variable
-client = MistralClient(
-    api_key=os.getenv("MISTRAL_API_KEY"),
-    model="mistral-tiny"  # or mistral-small / mistral-medium
-)
+# Load API key from environment
+api_key = os.getenv("MISTRAL_API_KEY")
+client = MistralClient(api_key=api_key, model="mistral-small-latest")
 
-@app.get("/")
-def home():
-    return {"message": "Mistral API is running!"}
+class PromptRequest(BaseModel):
+    prompt: str
 
-@app.post("/ocr")
-async def ocr(request: Request):
-    data = await request.json()
-    user_input = data.get("text", "Hello from Render!")
-
+@app.post("/chat")
+async def chat_with_mistral(req: PromptRequest):
     response = client.chat(
-        messages=[
-            ChatMessage(role="user", content=user_input)
-        ]
+        messages=[ChatMessage(role="user", content=req.prompt)]
     )
-
     return {"response": response.choices[0].message.content}
