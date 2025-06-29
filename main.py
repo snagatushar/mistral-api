@@ -6,7 +6,7 @@ from mistralai.models.ocr import OcrDocument
 
 app = FastAPI()
 
-client = MistralClient(api_key=os.getenv("MISTRAL_API_KEY"))
+client = MistralClient(api_key=os.getenv("7jjAfAK1zm9fodF0U9zREn5MqT7KIInX"))
 
 class OCRInput(BaseModel):
     file_base64: str
