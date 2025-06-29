@@ -5,19 +5,22 @@ import os
 
 app = FastAPI()
 
+# Use environment variable for safety
 api_key = os.getenv("MISTRAL_API_KEY")
+
+# Create client using updated SDK
 client = MistralClient(api_key=api_key, model="mistral-tiny")
 
+@app.get("/")
+def root():
+    return {"message": "Mistral API is live!"}
+
 @app.post("/ocr")
-async def ocr_api(request: Request):
+async def ocr(request: Request):
     body = await request.json()
-    base64_string = body.get("base64", "")
+    text_input = body.get("text", "Extract data from this image")
 
-    prompt = f"Extract text from this image: {base64_string[:50]}..."  # Dummy prompt for demo
-
-    messages = [
-        ChatMessage(role="user", content=prompt)
-    ]
-
+    messages = [ChatMessage(role="user", content=text_input)]
     response = client.chat(messages=messages)
+
     return {"response": response.choices[0].message.content}
