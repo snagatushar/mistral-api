@@ -7,7 +7,7 @@ from mistralai.models.ocr import OcrDocument
 app = FastAPI()
 
 # Use environment variable for security
-client = MistralClient(api_key=os.getenv("7jjAfAK1zm9fodF0U9zREn5MqT7KIInX"))
+client = MistralClient(api_key=os.getenv("MISTRAL_API_KEY"))
 
 class OCRInput(BaseModel):
     file_base64: str
