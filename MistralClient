@@ -1,0 +1,23 @@
+from fastapi import FastAPI, Request
+from mistralai.client import MistralClient
+from mistralai.models.chat_completion import ChatMessage
+import os
+
+app = FastAPI()
+
+api_key = os.getenv("MISTRAL_API_KEY")
+client = MistralClient(api_key=api_key, model="mistral-tiny")
+
+@app.post("/ocr")
+async def ocr_api(request: Request):
+    body = await request.json()
+    base64_string = body.get("base64", "")
+
+    prompt = f"Extract text from this image: {base64_string[:50]}..."  # Dummy prompt for demo
+
+    messages = [
+        ChatMessage(role="user", content=prompt)
+    ]
+
+    response = client.chat(messages=messages)
+    return {"response": response.choices[0].message.content}
